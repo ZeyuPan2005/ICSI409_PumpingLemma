@@ -19,7 +19,11 @@ def _display_string(value: str) -> str:
 
 
 def demonstration_text(p: int) -> str:
-    """Build the complete, readable demonstration for p."""
+    """Build the formatted proof demonstration for a concrete value of p.
+
+    The first sections use one representative valid decomposition. The final
+    section states the symbolic argument for every valid decomposition.
+    """
     validate_pumping_length(p)
     w = construct_witness(p)
     x = ""
@@ -62,6 +66,11 @@ def demonstration_text(p: int) -> str:
         f"    Pumped string belongs to L: {'YES' if is_in_language(pumped) else 'NO'}",
         "",
         "[5] General Argument",
+        "    Assume, for contradiction, that L is regular.",
+        "    Let p >= 1 be the pumping length guaranteed by the Pumping Lemma.",
+        "    The displayed p is one concrete value; the proof below applies",
+        "    to an arbitrary pumping length p >= 1.",
+        "",
         "    For every valid decomposition with |xy| <= p and |y| > 0,",
         "    x = 0^a and y = 0^b for a >= 0 and b >= 1.",
         "    Therefore z = 0^(p-a-b) 1^p.",
@@ -77,7 +86,10 @@ def demonstration_text(p: int) -> str:
     return "\n".join(lines)
 
 
-def display_demonstration(p: int, stream: TextIO = sys.stdout) -> None:
+def display_demonstration(p: int, stream: TextIO | None = None) -> None:
+    """Print the demonstration, resolving stdout at call time by default."""
+    if stream is None:
+        stream = sys.stdout
     print(demonstration_text(p), file=stream)
 
 

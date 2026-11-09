@@ -31,6 +31,11 @@ Pumping length: p = 3
     Pumped string belongs to L: NO
 
 [5] General Argument
+    Assume, for contradiction, that L is regular.
+    Let p >= 1 be the pumping length guaranteed by the Pumping Lemma.
+    The displayed p is one concrete value; the proof below applies
+    to an arbitrary pumping length p >= 1.
+
     For every valid decomposition with |xy| <= p and |y| > 0,
     x = 0^a and y = 0^b for a >= 0 and b >= 1.
     Therefore z = 0^(p-a-b) 1^p.

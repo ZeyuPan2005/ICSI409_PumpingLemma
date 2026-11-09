@@ -1,6 +1,8 @@
+import io
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
 
-from main import demonstration_text, main
+from main import demonstration_text, display_demonstration, main
 from pumping_lemma import (
     construct_witness,
     generate_decompositions,
@@ -47,13 +49,27 @@ class PumpingLemmaTests(unittest.TestCase):
                     self.assertFalse(is_in_language(pumped))
 
     def test_invalid_cli_input(self):
-        self.assertEqual(main(["0"]), 2)
-        self.assertEqual(main(["not-an-integer"]), 2)
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            self.assertEqual(main(["0"]), 2)
+            self.assertEqual(main(["not-an-integer"]), 2)
+
+        error_output = stderr.getvalue()
+        self.assertEqual(error_output.count("Error:"), 2)
+        self.assertIn("positive integer", error_output)
 
     def test_output_contains_general_argument(self):
         output = demonstration_text(3)
+        self.assertIn("Assume, for contradiction", output)
         self.assertIn("For every valid decomposition", output)
         self.assertIn("Conclusion: L is NOT regular.", output)
+
+    def test_display_demonstration_uses_call_time_stdout(self):
+        output = io.StringIO()
+        with redirect_stdout(output):
+            display_demonstration(1)
+
+        self.assertIn("Pumping length: p = 1", output.getvalue())
 
 
 if __name__ == "__main__":

@@ -10,13 +10,18 @@ def validate_pumping_length(p: int) -> None:
 
 
 def construct_witness(p: int) -> str:
-    """Construct w = 0^p 1^p for a positive pumping length."""
+    """Construct the Pumping Lemma witness w = 0^p 1^p."""
     validate_pumping_length(p)
     return "0" * p + "1" * p
 
 
 def is_in_language(w: str) -> bool:
-    """Return whether w belongs to L = {0^n 1^n | n >= 0}."""
+    """Return whether w belongs to L = {0^n 1^n | n >= 0}.
+
+    Equal numbers of zeros and ones are necessary but not sufficient. The
+    zeros must also occur before all of the ones, so the string must match the
+    form 0^n 1^n.
+    """
     if not isinstance(w, str) or any(symbol not in "01" for symbol in w):
         return False
 
@@ -26,7 +31,11 @@ def is_in_language(w: str) -> bool:
 
 
 def validate_decomposition(x: str, y: str, z: str, p: int, w: str) -> bool:
-    """Check the decomposition constraints required by the Pumping Lemma."""
+    """Check w = xyz and the Pumping Lemma constraints for this witness.
+
+    The provided decomposition must reconstruct w, have a nonempty y, and
+    satisfy |xy| <= p.
+    """
     validate_pumping_length(p)
     return (
         all(isinstance(part, str) for part in (x, y, z, w))
@@ -37,7 +46,7 @@ def validate_decomposition(x: str, y: str, z: str, p: int, w: str) -> bool:
 
 
 def pump_string(x: str, y: str, z: str, j: int) -> str:
-    """Return xy^jz for a nonnegative pumping value j."""
+    """Return xy^jz by repeating y exactly j times."""
     if isinstance(j, bool) or not isinstance(j, int) or j < 0:
         raise ValueError("The pumping value j must be a nonnegative integer.")
     return x + y * j + z
@@ -46,8 +55,10 @@ def pump_string(x: str, y: str, z: str, j: int) -> str:
 def generate_decompositions(p: int) -> Iterator[tuple[str, str, str]]:
     """Yield every valid decomposition of 0^p 1^p under |xy| <= p.
 
-    Since the first p symbols of the witness are zeros, every valid y consists
-    of one or more zeros. The generator avoids storing all decompositions.
+    The first p symbols of w are zeros, so x and the nonempty y can be chosen
+    by their lengths entirely within that prefix. The outer loop chooses the
+    length of x. For each x, the inner loop chooses a positive length for y
+    without allowing |xy| to exceed p. z is the remaining suffix of w.
     """
     w = construct_witness(p)
     for x_length in range(p + 1):
