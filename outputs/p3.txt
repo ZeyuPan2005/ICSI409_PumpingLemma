@@ -1,0 +1,43 @@
+========================================
+      PUMPING LEMMA DEMONSTRATION
+========================================
+
+Language: L = {0^n 1^n | n >= 0}
+Pumping length: p = 3
+
+[1] Witness Construction
+    w = 000111
+    |w| = 6 >= 3
+    w belongs to L: YES
+
+[2] Valid Decomposition
+    x = epsilon
+    y = 0
+    z = 00111
+
+    x + y + z = w: PASS
+    |y| > 0: PASS
+    |xy| <= p: PASS
+    Decomposition is valid: YES
+
+[3] Pumping Step
+    j = 0
+    xy^0z = 00111
+
+[4] Membership Check
+    Number of zeros: 2
+    Number of ones: 3
+    Pumped string belongs to L: NO
+
+[5] General Argument
+    For every valid decomposition with |xy| <= p and |y| > 0,
+    x = 0^a and y = 0^b for a >= 0 and b >= 1.
+    Therefore z = 0^(p-a-b) 1^p.
+
+    Pumping down with j = 0 gives xy^0z = 0^(p-b) 1^p.
+    Since b >= 1, the pumped string has fewer zeros than ones.
+    Thus xy^0z is not in L for every valid decomposition.
+    This contradicts the Pumping Lemma requirement for regular languages.
+
+Conclusion: L is NOT regular.
+========================================
