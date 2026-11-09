@@ -1,17 +1,16 @@
-# ICSI 409 Individual Bonus Mini Project
+# ICSI 409 — Individual Mini-Project: Pumping Lemma Demonstration
 
 ## Overview
 
-This project is the ICSI 409 Individual Bonus Mini-Project for Option 2, a
-Pumping Lemma demonstration. It studies
+This project demonstrates the Pumping Lemma argument for
 
 `L = {0^n 1^n | n >= 0}`
 
-and presents the contradiction argument showing that this language is not
-regular. The program is intentionally small and uses only the Python standard
-library.
+and shows that this language is not regular. The command-line program presents
+the symbolic proof first, then illustrates the proof with a user-provided
+pumping length.
 
-## Mathematical background and proof
+## Mathematical proof
 
 Assume, for contradiction, that `L` is regular. The Pumping Lemma then gives a
 pumping length `p >= 1`. Choose the witness
@@ -20,17 +19,16 @@ pumping length `p >= 1`. Choose the witness
 
 The witness belongs to `L`, and `|w| = 2p >= p`.
 
-Now consider any valid decomposition `w = xyz` satisfying `|xy| <= p` and
-`|y| > 0`. The first `p` symbols of `w` are all zeros, so every such
+Consider any valid decomposition `w = xyz` satisfying `|xy| <= p` and
+`|y| > 0`. The first `p` symbols of `w` are zeros, so every valid
 decomposition has the form
 
 `x = 0^a`, `y = 0^b`, and `z = 0^(p-a-b) 1^p`,
 
-where `a >= 0`, `b >= 1`, and `a + b <= p`. This describes every valid
-decomposition, not only the representative decomposition printed by the
-program.
+where `a >= 0`, `b >= 1`, and `a + b <= p`. This covers every valid
+decomposition, not only the representative split shown by the program.
 
-Choose `j = 0`. Pumping down gives
+Choose `j = 0`. Then
 
 `xy^0z = 0^(p-b) 1^p`.
 
@@ -39,10 +37,25 @@ Because `b >= 1`, the pumped string has fewer zeros than ones, so it is not in
 remain in the language for every nonnegative pumping value. Therefore,
 `L = {0^n 1^n | n >= 0}` is not regular.
 
+## Proof-first output
+
+The program prints four sections in this order:
+
+1. **Proof Setup** states the contradiction assumption, the pumping length, and
+   the symbolic witness.
+2. **General Proof** handles every valid decomposition and pumps down with
+   `j = 0`.
+3. **Concrete Demonstration** uses the supplied `p` and the representative
+   decomposition `x = epsilon`, `y = 0`, and `z = 0^(p-1) 1^p`.
+4. **Conclusion** restates the contradiction and the non-regularity result.
+
+The concrete split illustrates the pumping operation. The symbolic argument in
+**General Proof** establishes the result for every valid split.
+
 ## Implementation
 
-The implementation separates the mathematical operations from the command-line
-presentation.
+`pumping_lemma.py` contains the mathematical operations. `main.py` handles
+input validation and the proof-first command-line presentation.
 
 | Mathematical concept | Python function | Responsibility |
 | --- | --- | --- |
@@ -50,15 +63,11 @@ presentation.
 | Language membership | `is_in_language(w)` | Checks the `0^n 1^n` form, including the empty string. |
 | Decomposition constraints | `validate_decomposition(...)` | Checks `w = xyz`, `|y| > 0`, and `|xy| <= p`. |
 | Pumping | `pump_string(x, y, z, j)` | Constructs `xy^jz`. |
-| Finite enumeration | `generate_decompositions(p)` | Generates every valid decomposition for testing and study. |
-
-`pumping_lemma.py` contains these mathematical operations. `main.py` handles
-input validation and presents one representative decomposition followed by the
-general proof.
+| Finite enumeration | `generate_decompositions(p)` | Generates valid decompositions for testing and study. |
 
 ## Usage and testing
 
-Python 3.10 or newer is recommended.
+Requires Python 3.10 or later.
 
 Run interactively and enter a positive pumping length when prompted:
 
@@ -78,17 +87,20 @@ Run the unit tests with:
 python -m unittest discover -s tests -v
 ```
 
-A representative execution for `p = 3` includes:
+A proof-first execution for `p = 3` includes:
 
 ```text
-w = 000111
-|w| = 6 = 2 * p
-xy^0z = 00111
-Pumped string belongs to L: NO
-Conclusion: L is NOT regular.
+[1] Proof Setup
+[2] General Proof
+    For every valid decomposition with |xy| <= p and |y| > 0,
+[3] Concrete Demonstration
+    Representative Decomposition
+        xy^0z = 00111
+[4] Conclusion
+    Therefore, L is NOT regular.
 ```
 
-The repository also includes the execution outputs [outputs/p3.txt](outputs/p3.txt)
+The repository includes the actual execution outputs [outputs/p3.txt](outputs/p3.txt)
 and [outputs/p5.txt](outputs/p5.txt).
 
 ## Scope and limitations
@@ -100,5 +112,3 @@ available for finite enumeration and testing, but it is not a separate CLI
 feature. Finite enumeration supports testing and intuition, while the symbolic
 argument supplies the proof. Very large pumping lengths can produce long
 strings and are outside the intended practical usage.
-
-No separate formal report is required for this bonus project.

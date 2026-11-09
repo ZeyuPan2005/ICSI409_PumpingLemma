@@ -58,18 +58,32 @@ class PumpingLemmaTests(unittest.TestCase):
         self.assertEqual(error_output.count("Error:"), 2)
         self.assertIn("positive integer", error_output)
 
-    def test_output_contains_general_argument(self):
+    def test_proof_precedes_concrete_demonstration(self):
         output = demonstration_text(3)
+        setup = output.index("[1] Proof Setup")
+        general = output.index("[2] General Proof")
+        concrete = output.index("[3] Concrete Demonstration")
+        conclusion = output.index("[4] Conclusion")
+
+        self.assertLess(setup, general)
+        self.assertLess(general, concrete)
+        self.assertLess(concrete, conclusion)
         self.assertIn("Assume, for contradiction", output)
-        self.assertIn("For every valid decomposition", output)
-        self.assertIn("Conclusion: L is NOT regular.", output)
+        self.assertIn("every valid decomposition", output)
+        self.assertIn("x = 0^a", output)
+        self.assertIn("y = 0^b", output)
+        self.assertIn("Representative Decomposition", output)
+        self.assertIn("x = epsilon", output)
+        self.assertIn("xy^0z = 00111", output)
+        self.assertIn("Pumped string belongs to L: NO", output)
+        self.assertIn("Therefore, L is NOT regular.", output)
 
     def test_display_demonstration_uses_call_time_stdout(self):
         output = io.StringIO()
         with redirect_stdout(output):
             display_demonstration(1)
 
-        self.assertIn("Pumping length: p = 1", output.getvalue())
+        self.assertIn("[1] Proof Setup", output.getvalue())
 
 
 if __name__ == "__main__":

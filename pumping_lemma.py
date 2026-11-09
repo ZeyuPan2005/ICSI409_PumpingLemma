@@ -27,6 +27,7 @@ def is_in_language(w: str) -> bool:
 
     zero_count = w.count("0")
     one_count = w.count("1")
+    # The canonical-form check enforces the required order of the symbols.
     return zero_count == one_count and w == "0" * zero_count + "1" * one_count
 
 
@@ -61,7 +62,9 @@ def generate_decompositions(p: int) -> Iterator[tuple[str, str, str]]:
     without allowing |xy| to exceed p. z is the remaining suffix of w.
     """
     w = construct_witness(p)
+    # Both x and y stay within the first p zeros because |xy| <= p.
     for x_length in range(p + 1):
+        # Starting at one enforces |y| > 0; the upper bound enforces |xy| <= p.
         for y_length in range(1, p - x_length + 1):
             x = w[:x_length]
             y = w[x_length : x_length + y_length]
